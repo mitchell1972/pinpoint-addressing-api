@@ -10,14 +10,15 @@ every query has exactly one trigram match. Before this number means anything, gr
 test/fixtures with same-street collisions, misspellings, and genuinely ambiguous
 pidgin where the correct answer is not the only candidate. Run: pytest -m accuracy -rX
 """
+
 import pytest
 
 
 @pytest.mark.accuracy
 @pytest.mark.xfail(
     reason="Non-gating north-star (spec §11, >90%). Current 8-point fixture set is too "
-           "small/sparse to be adversarial; the pg_trgm baseline clears it trivially and "
-           "that does not validate the engine. Expand fixtures before trusting this.",
+    "small/sparse to be adversarial; the pg_trgm baseline clears it trivially and "
+    "that does not validate the engine. Expand fixtures before trusting this.",
     strict=False,
 )
 async def test_forward_geocode_top_candidate_accuracy(client, test_auth, fixtures):
@@ -34,4 +35,6 @@ async def test_forward_geocode_top_candidate_accuracy(client, test_auth, fixture
             correct += 1
 
     rate = correct / len(fixtures)
-    assert rate >= 0.90, f"top-candidate accuracy {rate:.0%} < 90% target ({correct}/{len(fixtures)})"
+    assert rate >= 0.90, (
+        f"top-candidate accuracy {rate:.0%} < 90% target ({correct}/{len(fixtures)})"
+    )

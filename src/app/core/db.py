@@ -4,6 +4,7 @@ A single process-wide pool. `get_conn` is a FastAPI dependency; because FastAPI
 caches dependency results per-request, the auth check and the controller share
 one connection per request.
 """
+
 from __future__ import annotations
 
 from psycopg.rows import dict_row

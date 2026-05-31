@@ -14,7 +14,7 @@ async def resolve_principal(conn, authorization: str) -> Principal:
     if not authorization.startswith(_BEARER):
         raise _unauthorized()
 
-    raw = authorization[len(_BEARER):].strip()
+    raw = authorization[len(_BEARER) :].strip()
     if raw.startswith("pk_test_"):
         claimed_env = "test"
     elif raw.startswith("pk_live_"):

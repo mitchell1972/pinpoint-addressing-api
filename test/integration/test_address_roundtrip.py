@@ -6,17 +6,19 @@ async def test_create_then_resolve_by_code(client, test_auth):
         "/v1/addresses",
         headers=test_auth,
         json={
-            "lat": 6.4470, "lng": 3.4730,
+            "lat": 6.4470,
+            "lng": 3.4730,
             "alias": "My shop",
             "landmark": "Beside Lekki Phase 1 gate",
-            "state": "Lagos", "lga": "Eti-Osa",
+            "state": "Lagos",
+            "lga": "Eti-Osa",
         },
     )
     assert r.status_code == 201, r.text
     created = r.json()
     assert created["code"].startswith("PIN-")
-    assert created["olc"]          # Plus Code computed
-    assert created["geohash"]      # geohash computed
+    assert created["olc"]  # Plus Code computed
+    assert created["geohash"]  # geohash computed
     assert created["status"] == "unverified"
 
     r2 = await client.get(f"/v1/addresses/{created['code']}", headers=test_auth)

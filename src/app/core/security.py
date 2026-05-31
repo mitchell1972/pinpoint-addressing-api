@@ -9,7 +9,7 @@ class Principal:
     account_id: str
     account_type: str
     api_key_id: str
-    env: str          # 'test' | 'live'
+    env: str  # 'test' | 'live'
     rate_limit: int
 
 

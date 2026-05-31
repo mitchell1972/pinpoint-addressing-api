@@ -45,7 +45,9 @@ LIMIT %(limit)s
 """
 
 
-async def forward_geocode(conn, query: str, state: str | None, lga: str | None, limit: int) -> list[dict]:
+async def forward_geocode(
+    conn, query: str, state: str | None, lga: str | None, limit: int
+) -> list[dict]:
     async with conn.cursor() as cur:
         await cur.execute(_FORWARD, {"q": query, "state": state, "lga": lga, "limit": limit})
         return await cur.fetchall()

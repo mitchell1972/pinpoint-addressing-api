@@ -6,6 +6,7 @@
 
 Demo API keys (test/live):  pk_test_pinpoint_demo_0001 / pk_live_pinpoint_demo_0001
 """
+
 import json
 import pathlib
 import sys
@@ -44,9 +45,17 @@ def seed(conn) -> None:
             cur.execute(
                 "INSERT INTO address (code, olc, alias, lat, lng, geohash, state, lga, confidence, status) "
                 "VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, 'verified') RETURNING id",
-                (f["code"], olc_encode(f["lat"], f["lng"]), f.get("alias"),
-                 f["lat"], f["lng"], geohash_encode(f["lat"], f["lng"]),
-                 f["state"], f["lga"], 0.95),
+                (
+                    f["code"],
+                    olc_encode(f["lat"], f["lng"]),
+                    f.get("alias"),
+                    f["lat"],
+                    f["lng"],
+                    geohash_encode(f["lat"], f["lng"]),
+                    f["state"],
+                    f["lga"],
+                    0.95,
+                ),
             )
             address_id = cur.fetchone()[0]
             cur.execute(

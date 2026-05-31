@@ -4,6 +4,7 @@ Controllers and services raise these; a single handler converts them to JSON.
 This keeps controllers thin (no scattered HTTPException) and lets the service
 layer stay framework-agnostic apart from importing these types.
 """
+
 from fastapi import FastAPI, Request
 from fastapi.responses import JSONResponse
 
@@ -27,7 +28,7 @@ class UnauthorizedError(AppError):
 
 def register_error_handlers(app: FastAPI) -> None:
     @app.exception_handler(AppError)
-    async def _handle_app_error(request: Request, exc: AppError):  # noqa: ANN202
+    async def _handle_app_error(request: Request, exc: AppError):
         return JSONResponse(
             status_code=exc.status_code,
             content={"detail": exc.detail},

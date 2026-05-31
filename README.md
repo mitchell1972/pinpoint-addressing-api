@@ -61,6 +61,7 @@ python3.11 -m venv .venv
 .venv/bin/pip install -e ".[dev]"
 
 .venv/bin/pytest -q             # run the suite (recreates a pinpoint_test DB)
+make lint                       # ruff check + format --check (what CI gates on)
 
 # Run the API against the dev DB:
 .venv/bin/python scripts/init_db.py --seed     # schema + demo account/keys/fixtures
@@ -113,5 +114,6 @@ curl -s localhost:8000/v1/geocode \
 - **Layer-first MVC trade-off:** extracting one of the spec's §9.1 services later means
   gathering its controller/service/repository/schema from across four folders. A
   feature-first layout would localise that; this was a deliberate structure choice.
-- No CI workflow yet; `pytest` is the gate.
+- **CI** (GitHub Actions, on every push/PR to `main`): a `lint` job (ruff check +
+  format) and a `test` job (pytest against a real PostGIS service). Both must pass.
 ```
