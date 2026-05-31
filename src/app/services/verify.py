@@ -4,6 +4,7 @@ MVP returns existence + confidence. In `kyc` mode it writes a minimal verificati
 record and returns its reference. The full evidence trail (timestamped capture,
 device, agent attestation, immutable store) is V1.
 """
+
 from app.repositories import addresses as addresses_repo
 from app.repositories import geocode as geocode_repo
 from app.repositories import verify as verify_repo
@@ -21,12 +22,24 @@ async def verify(conn, req: VerifyRequest) -> dict:
         addr = rows[0] if rows else None
 
     if addr is None:
-        return {"exists": False, "confidence": 0.0, "mode": req.mode,
-                "code": None, "evidence_ref": None, "verification_id": None}
+        return {
+            "exists": False,
+            "confidence": 0.0,
+            "mode": req.mode,
+            "code": None,
+            "evidence_ref": None,
+            "verification_id": None,
+        }
 
     confidence = round(float(addr["confidence"]), 2)
-    result = {"exists": True, "confidence": confidence, "mode": req.mode,
-              "code": addr["code"], "evidence_ref": None, "verification_id": None}
+    result = {
+        "exists": True,
+        "confidence": confidence,
+        "mode": req.mode,
+        "code": addr["code"],
+        "evidence_ref": None,
+        "verification_id": None,
+    }
 
     if req.mode == "kyc":
         verification_id = await verify_repo.create_verification(

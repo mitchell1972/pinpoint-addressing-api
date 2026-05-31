@@ -1,5 +1,5 @@
 # Convenience targets. Assumes a local virtualenv at .venv (see README).
-.PHONY: venv up down init-db seed dev test
+.PHONY: venv up down init-db seed dev test lint format
 
 venv:
 	python3.11 -m venv .venv && .venv/bin/pip install -e ".[dev]"
@@ -21,3 +21,11 @@ dev:            ## run the API with autoreload
 
 test:
 	.venv/bin/pytest -q
+
+lint:           ## what CI gates on: lint + formatting check (no changes written)
+	.venv/bin/ruff check .
+	.venv/bin/ruff format --check .
+
+format:         ## autofix lint + apply formatting in place
+	.venv/bin/ruff check --fix .
+	.venv/bin/ruff format .

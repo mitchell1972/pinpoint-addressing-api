@@ -21,6 +21,7 @@ dev = [
     "pytest>=8.2",
     "pytest-asyncio>=0.23",
     "httpx>=0.27",             # ASGI test client
+    "ruff~=0.15.0",            # lint + format (pinned to a minor line for reproducible CI)
 ]
 
 [tool.setuptools.packages.find]
@@ -33,3 +34,21 @@ testpaths = ["test"]
 markers = [
     "accuracy: forward-geocode accuracy harness — the north-star (spec §11, target >90%). May xfail until the engine is tuned.",
 ]
+
+[tool.ruff]
+line-length = 100
+target-version = "py311"
+
+[tool.ruff.lint]
+# E/W pycodestyle, F pyflakes, I isort, B bugbear, UP pyupgrade.
+select = ["E", "F", "I", "B", "UP", "W"]
+# Line length is owned by `ruff format`, which won't split strings (e.g. SQL/URLs),
+# so leave E501 to the formatter rather than failing the lint gate on long literals.
+ignore = ["E501"]
+
+[tool.ruff.lint.isort]
+known-first-party = ["app"]
+
+[tool.ruff.lint.flake8-bugbear]
+# FastAPI's dependency-injection markers are calls in argument defaults by design.
+extend-immutable-calls = ["fastapi.Depends", "fastapi.Query", "fastapi.Path", "fastapi.Header", "fastapi.Body"]

@@ -8,6 +8,7 @@ sets request.state.principal), we:
 Metering must never break a request, so DB failures here are swallowed (a real
 deployment would emit to a dead-letter/metric instead of `pass`).
 """
+
 from starlette.middleware.base import BaseHTTPMiddleware
 
 from app.core.db import open_pool

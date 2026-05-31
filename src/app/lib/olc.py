@@ -4,6 +4,7 @@ We deliberately do not invent a grid code (spec §2.3, §9.2) — we wrap Google
 reference implementation and interoperate. The human-shareable `PIN-XXXX-XX`
 alias lives in lib/codes.py.
 """
+
 from openlocationcode import openlocationcode as _olc
 
 # 11 chars ≈ ~3.5m resolution — enough to distinguish adjacent frontages.

@@ -26,8 +26,17 @@ async def create_address(conn, data: AddressCreate, code: str, olc: str, geohash
                 VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, 'unverified')
                 RETURNING id
                 """,
-                (code, olc, data.alias, data.lat, data.lng, geohash,
-                 data.state, data.lga, data.ward),
+                (
+                    code,
+                    olc,
+                    data.alias,
+                    data.lat,
+                    data.lng,
+                    geohash,
+                    data.state,
+                    data.lga,
+                    data.ward,
+                ),
             )
             address_id = (await cur.fetchone())["id"]
 
@@ -38,8 +47,13 @@ async def create_address(conn, data: AddressCreate, code: str, olc: str, geohash
                         (address_id, landmark, building_desc, access_notes, contact)
                     VALUES (%s, %s, %s, %s, %s)
                     """,
-                    (address_id, data.landmark, data.building_desc,
-                     data.access_notes, data.contact),
+                    (
+                        address_id,
+                        data.landmark,
+                        data.building_desc,
+                        data.access_notes,
+                        data.contact,
+                    ),
                 )
 
     return await get_by_code(conn, code)

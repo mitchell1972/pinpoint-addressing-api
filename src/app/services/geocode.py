@@ -3,6 +3,7 @@
 Services return plain result dicts (the domain view); controllers wrap them with
 transport concerns (request_id, units, job_id).
 """
+
 from app.repositories import geocode as repo
 from app.schemas.geocode import BatchGeocodeRequest, GeocodeRequest, ReverseRequest
 

@@ -59,4 +59,6 @@ async def batch_geocode(
         GeocodeResponse(results=[GeocodeResult(**r) for r in g], request_id=_request_id(), units=1)
         for g in groups
     ]
-    return BatchGeocodeResponse(job_id="job_" + uuid4().hex[:16], status="completed", results=sub_responses)
+    return BatchGeocodeResponse(
+        job_id="job_" + uuid4().hex[:16], status="completed", results=sub_responses
+    )

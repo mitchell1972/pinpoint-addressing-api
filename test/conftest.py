@@ -4,6 +4,7 @@ Session: drop+recreate `pinpoint_test` and apply db/schema.sql.
 Per test: open the pool, TRUNCATE, and seed a demo account, two API keys, and
 the Lagos ground-truth fixtures. Requires `docker compose up -d` first.
 """
+
 import hashlib
 import json
 import os
@@ -89,9 +90,17 @@ async def _seed() -> None:
                 await cur.execute(
                     "INSERT INTO address (code, olc, alias, lat, lng, geohash, state, lga, confidence, status) "
                     "VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, 'verified') RETURNING id",
-                    (f["code"], olc_encode(f["lat"], f["lng"]), f.get("alias"),
-                     f["lat"], f["lng"], geohash_encode(f["lat"], f["lng"]),
-                     f["state"], f["lga"], 0.95),
+                    (
+                        f["code"],
+                        olc_encode(f["lat"], f["lng"]),
+                        f.get("alias"),
+                        f["lat"],
+                        f["lng"],
+                        geohash_encode(f["lat"], f["lng"]),
+                        f["state"],
+                        f["lga"],
+                        0.95,
+                    ),
                 )
                 address_id = (await cur.fetchone())["id"]
                 await cur.execute(
