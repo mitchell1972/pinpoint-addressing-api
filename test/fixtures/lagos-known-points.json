@@ -1,0 +1,82 @@
+[
+  {
+    "code": "PIN-IKY-001",
+    "alias": "Zenith Awolowo branch gate",
+    "lat": 6.4488, "lng": 3.4302,
+    "state": "Lagos", "lga": "Eti-Osa",
+    "landmark": "Blue gate opposite Zenith Bank, Awolowo Road, Ikoyi",
+    "building_desc": "Two-storey blue building with black gate",
+    "query": "blue gate opposite zenith bank awolowo road",
+    "easy": true
+  },
+  {
+    "code": "PIN-VIC-002",
+    "alias": "Silverbird VI",
+    "lat": 6.4281, "lng": 3.4219,
+    "state": "Lagos", "lga": "Eti-Osa",
+    "landmark": "Silverbird Galleria, Ahmadu Bello Way, Victoria Island",
+    "building_desc": "Glass-fronted shopping galleria",
+    "query": "silverbird galleria ahmadu bello way",
+    "easy": true
+  },
+  {
+    "code": "PIN-LEK-003",
+    "alias": "Lekki Phase 1 gate",
+    "lat": 6.4470, "lng": 3.4730,
+    "state": "Lagos", "lga": "Eti-Osa",
+    "landmark": "Lekki Phase 1 Gate, Admiralty Way",
+    "building_desc": "Estate gate with security post",
+    "query": "lekki phase 1 gate admiralty way",
+    "easy": true
+  },
+  {
+    "code": "PIN-YAB-004",
+    "alias": "Tejuosho market",
+    "lat": 6.5095, "lng": 3.3711,
+    "state": "Lagos", "lga": "Lagos Mainland",
+    "landmark": "Tejuosho Market entrance, Yaba",
+    "building_desc": "Main market entrance off Ojuelegba Road",
+    "query": "tejuosho market entrance yaba",
+    "easy": true
+  },
+  {
+    "code": "PIN-IKJ-005",
+    "alias": "Ikeja City Mall",
+    "lat": 6.5772, "lng": 3.3509,
+    "state": "Lagos", "lga": "Ikeja",
+    "landmark": "Ikeja City Mall, Obafemi Awolowo Way",
+    "building_desc": "Large shopping mall with car park",
+    "query": "ikeja city mall",
+    "easy": true
+  },
+  {
+    "code": "PIN-SUR-006",
+    "alias": "Teslim Balogun area",
+    "lat": 6.4969, "lng": 3.3481,
+    "state": "Lagos", "lga": "Surulere",
+    "landmark": "National Stadium, Surulere",
+    "building_desc": "Adjacent to Teslim Balogun Stadium",
+    "query": "for back of teslim balogun stadium",
+    "easy": false
+  },
+  {
+    "code": "PIN-APA-007",
+    "alias": "Apapa Wharf Gate 2",
+    "lat": 6.4490, "lng": 3.3590,
+    "state": "Lagos", "lga": "Apapa",
+    "landmark": "Apapa Wharf Gate 2",
+    "building_desc": "Port access gate",
+    "query": "wharf gate",
+    "easy": false
+  },
+  {
+    "code": "PIN-OSH-008",
+    "alias": "Oshodi interchange",
+    "lat": 6.5557, "lng": 3.3490,
+    "state": "Lagos", "lga": "Oshodi-Isolo",
+    "landmark": "Oshodi Transport Interchange",
+    "building_desc": "Multi-level bus terminal under the bridge",
+    "query": "under bridge oshodi where buses dey",
+    "easy": false
+  }
+]

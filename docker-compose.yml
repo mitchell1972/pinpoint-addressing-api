@@ -1,0 +1,22 @@
+# Local Postgres + PostGIS for dev and the test suite.
+# The image ships PostGIS + the contrib extensions (pg_trgm) we enable in db/schema.sql.
+services:
+  db:
+    image: postgis/postgis:16-3.4
+    environment:
+      POSTGRES_USER: pinpoint
+      POSTGRES_PASSWORD: pinpoint
+      POSTGRES_DB: pinpoint
+    ports:
+      # Host 55432 to avoid colliding with a local Postgres on the default 5432.
+      - "55432:5432"
+    volumes:
+      - pinpoint_pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U pinpoint -d pinpoint"]
+      interval: 3s
+      timeout: 3s
+      retries: 20
+
+volumes:
+  pinpoint_pgdata:
