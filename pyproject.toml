@@ -30,7 +30,7 @@ where = ["src"]
 
 [tool.pytest.ini_options]
 asyncio_mode = "auto"
-pythonpath = ["src"]
+pythonpath = ["src", "clients/python"]
 testpaths = ["test"]
 markers = [
     "accuracy: forward-geocode accuracy harness — the north-star (spec §11, target >90%). May xfail until the engine is tuned.",
@@ -49,7 +49,7 @@ select = ["E", "F", "I", "B", "UP", "W"]
 ignore = ["E501"]
 
 [tool.ruff.lint.isort]
-known-first-party = ["app"]
+known-first-party = ["app", "pinpoint_sdk"]
 
 [tool.ruff.lint.flake8-bugbear]
 # FastAPI's dependency-injection markers are calls in argument defaults by design.
