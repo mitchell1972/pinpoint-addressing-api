@@ -1,9 +1,8 @@
-"""Usage metering + rate-limit header contract.
+"""Usage metering.
 
-Runs after each request. If the auth dependency authenticated the caller (it
-sets request.state.principal), we:
-  1. surface the X-RateLimit-* header contract, and
-  2. record one usage_event for billable endpoints on a successful response.
+Runs after each request and records one usage_event for billable endpoints on a
+successful, authenticated response. (Rate-limit headers are set, and the limit
+enforced, by the auth dependency — see core/rate_limit.py.)
 
 Metering must never break a request, so DB failures here are swallowed (a real
 deployment would emit to a dead-letter/metric instead of `pass`).
@@ -26,11 +25,6 @@ class MeteringMiddleware(BaseHTTPMiddleware):
         principal = getattr(request.state, "principal", None)
         if principal is None:
             return response
-
-        # Rate-limit contract is surfaced now; enforcement (Redis token bucket)
-        # is a TODO — see README status.
-        response.headers["X-RateLimit-Limit"] = str(principal.rate_limit)
-        response.headers["X-RateLimit-Remaining"] = str(max(principal.rate_limit - 1, 0))
 
         if request.url.path in _BILLABLE and response.status_code < 400:
             try:
