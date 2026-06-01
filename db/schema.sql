@@ -48,6 +48,7 @@ CREATE TABLE IF NOT EXISTS address (
     last_verified_at   timestamptz,                         -- last KYC re-verification
     verification_count int NOT NULL DEFAULT 0,              -- feedback loop / freshness
     owner_account_id   uuid REFERENCES account(id),         -- merchant who claimed it
+    source             text NOT NULL DEFAULT 'manual',      -- provenance: manual|import|osm|claim
     created_at         timestamptz NOT NULL DEFAULT now()
 );
 CREATE INDEX IF NOT EXISTS address_geom_gix     ON address USING gist (geom);

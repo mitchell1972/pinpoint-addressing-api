@@ -82,6 +82,44 @@ async def claim(conn, code: str, account_id: str, alias: str | None) -> dict | N
         return await cur.fetchone()
 
 
+async def exists_by_olc(conn, olc: str) -> bool:
+    async with conn.cursor() as cur:
+        await cur.execute("SELECT 1 FROM address WHERE olc = %s LIMIT 1", (olc,))
+        return (await cur.fetchone()) is not None
+
+
+async def insert_imported(
+    conn, code: str, olc: str, geohash: str, row: dict, source: str, confidence: float
+) -> None:
+    """Insert a bootstrapped/imported address with provenance + a source confidence."""
+    async with conn.transaction():
+        async with conn.cursor() as cur:
+            await cur.execute(
+                "INSERT INTO address "
+                "(code, olc, alias, lat, lng, geohash, state, lga, confidence, status, source) "
+                "VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, 'unverified', %s) RETURNING id",
+                (
+                    code,
+                    olc,
+                    row.get("alias"),
+                    row["lat"],
+                    row["lng"],
+                    geohash,
+                    row.get("state"),
+                    row.get("lga"),
+                    confidence,
+                    source,
+                ),
+            )
+            address_id = (await cur.fetchone())["id"]
+            if row.get("landmark") or row.get("building_desc"):
+                await cur.execute(
+                    "INSERT INTO address_metadata (address_id, landmark, building_desc) "
+                    "VALUES (%s, %s, %s)",
+                    (address_id, row.get("landmark"), row.get("building_desc")),
+                )
+
+
 async def touch_verification(conn, code: str, confidence: float, verified_at) -> None:
     """Record a successful (re)verification: bump the count, refresh the
     timestamp, update running confidence, and mark the address verified."""
