@@ -130,3 +130,13 @@ CREATE TABLE IF NOT EXISTS delivery_event (
 );
 CREATE INDEX IF NOT EXISTS delivery_event_account_idx ON delivery_event (account_id);
 CREATE INDEX IF NOT EXISTS delivery_event_address_idx ON delivery_event (address_id);
+
+-- Deferred-sync ledger for offline capture: maps a client-generated capture_id
+-- to the address it created, so re-syncing a queued batch is idempotent (the
+-- server is authoritative — spec §9.7).
+CREATE TABLE IF NOT EXISTS captured_address (
+    capture_id  uuid PRIMARY KEY,
+    address_id  uuid NOT NULL REFERENCES address(id),
+    account_id  uuid NOT NULL REFERENCES account(id) ON DELETE CASCADE,
+    created_at  timestamptz NOT NULL DEFAULT now()
+);
