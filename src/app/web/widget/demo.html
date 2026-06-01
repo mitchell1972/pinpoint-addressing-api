@@ -1,0 +1,32 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Pinpoint checkout widget — demo</title>
+    <style>
+      body { font-family: system-ui, sans-serif; max-width: 520px; margin: 2rem auto; padding: 0 1rem; }
+      input { font-size: 1rem; padding: 0.4rem 0.6rem; width: 100%; box-sizing: border-box; }
+      li { padding: 0.3rem 0.4rem; border-bottom: 1px solid #eee; }
+      li:hover { background: #f3f7ff; }
+    </style>
+  </head>
+  <body>
+    <h1>Demo checkout</h1>
+    <form onsubmit="return false">
+      <label for="pinpoint-widget">Delivery address</label>
+      <div id="pinpoint-widget" data-api-key="pk_test_pinpoint_demo_0001"></div>
+    </form>
+    <p data-testid="host-token"></p>
+
+    <script src="widget.js"></script>
+    <script>
+      // The merchant page listens for the selection and stores the token.
+      document
+        .getElementById("pinpoint-widget")
+        .addEventListener("pinpoint:selected", (e) => {
+          document.querySelector('[data-testid="host-token"]').textContent = "token=" + e.detail.code;
+        });
+    </script>
+  </body>
+</html>

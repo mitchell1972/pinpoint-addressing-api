@@ -44,6 +44,8 @@ app.include_router(analytics.router, prefix="/v1", tags=["analytics"])
 # Static dispatch dashboard at /dashboard/ — a thin UI over the /v1 API.
 _WEB_DIR = pathlib.Path(__file__).parent / "web"
 app.mount("/dashboard", StaticFiles(directory=_WEB_DIR / "dashboard", html=True), name="dashboard")
+# Drop-in checkout widget + its demo host page.
+app.mount("/widget", StaticFiles(directory=_WEB_DIR / "widget", html=True), name="widget")
 
 
 @app.get("/health", tags=["meta"])
