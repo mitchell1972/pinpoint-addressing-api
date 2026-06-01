@@ -116,3 +116,17 @@ CREATE TABLE IF NOT EXISTS idempotency_key (
     created_at          timestamptz NOT NULL DEFAULT now(),
     PRIMARY KEY (scope, idem_key)
 );
+
+-- Delivery outcomes per address — drives failed-drop rate, time-to-locate and
+-- hotspots, and feeds the confidence loop (spec §6.5, §11).
+CREATE TABLE IF NOT EXISTS delivery_event (
+    id                     uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+    address_id             uuid NOT NULL REFERENCES address(id),
+    account_id             uuid NOT NULL REFERENCES account(id) ON DELETE CASCADE,
+    status                 text NOT NULL CHECK (status IN ('delivered', 'failed')),
+    reason                 text,
+    time_to_locate_seconds int,
+    created_at             timestamptz NOT NULL DEFAULT now()
+);
+CREATE INDEX IF NOT EXISTS delivery_event_account_idx ON delivery_event (account_id);
+CREATE INDEX IF NOT EXISTS delivery_event_address_idx ON delivery_event (address_id);

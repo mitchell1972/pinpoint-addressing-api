@@ -120,6 +120,15 @@ async def insert_imported(
                 )
 
 
+async def bump_confidence(conn, address_id, delta: float) -> None:
+    """Nudge an address's confidence up (capped at 1.0) — e.g. after a
+    successful delivery to it (the feedback loop)."""
+    await conn.execute(
+        "UPDATE address SET confidence = LEAST(1.0, confidence + %s) WHERE id = %s",
+        (delta, address_id),
+    )
+
+
 async def touch_verification(conn, code: str, confidence: float, verified_at) -> None:
     """Record a successful (re)verification: bump the count, refresh the
     timestamp, update running confidence, and mark the address verified."""
