@@ -1,0 +1,14 @@
+.git
+.venv
+__pycache__
+*.pyc
+.pytest_cache
+.ruff_cache
+.egg-info
+src/*.egg-info
+test
+data
+clients
+connectors
+*.md
+.github

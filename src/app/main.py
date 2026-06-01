@@ -2,6 +2,7 @@ import pathlib
 from contextlib import asynccontextmanager
 
 from fastapi import FastAPI
+from fastapi.responses import JSONResponse
 from fastapi.staticfiles import StaticFiles
 
 from app.controllers import (
@@ -66,4 +67,17 @@ app.mount("/capture", StaticFiles(directory=_WEB_DIR / "capture", html=True), na
 
 @app.get("/health", tags=["meta"])
 async def health():
+    """Liveness: the process is up."""
     return {"status": "ok"}
+
+
+@app.get("/ready", tags=["meta"])
+async def ready():
+    """Readiness: the process can reach its database."""
+    try:
+        pool = await open_pool()
+        async with pool.connection() as conn:
+            await conn.execute("SELECT 1")
+    except Exception:
+        return JSONResponse(status_code=503, content={"status": "not ready"})
+    return {"status": "ready"}
