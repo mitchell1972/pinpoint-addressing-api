@@ -1,8 +1,9 @@
 from app.schemas.addresses import AddressCreate
 
 _SELECT_BY_CODE = """
-SELECT a.code, a.olc, a.alias, a.lat, a.lng, a.geohash,
+SELECT a.id, a.code, a.olc, a.alias, a.lat, a.lng, a.geohash,
        a.state, a.lga, a.ward, a.confidence, a.status, a.created_at,
+       a.last_verified_at, a.verification_count,
        m.landmark, m.building_desc, m.access_notes, m.contact
 FROM address a
 LEFT JOIN address_metadata m ON m.address_id = a.id
@@ -57,3 +58,13 @@ async def create_address(conn, data: AddressCreate, code: str, olc: str, geohash
                 )
 
     return await get_by_code(conn, code)
+
+
+async def touch_verification(conn, code: str, confidence: float, verified_at) -> None:
+    """Record a successful (re)verification: bump the count, refresh the
+    timestamp, update running confidence, and mark the address verified."""
+    await conn.execute(
+        "UPDATE address SET last_verified_at = %s, verification_count = verification_count + 1, "
+        "confidence = %s, status = 'verified' WHERE code = %s",
+        (verified_at, confidence, code),
+    )

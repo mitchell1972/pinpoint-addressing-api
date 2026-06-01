@@ -8,6 +8,8 @@ class VerifyRequest(BaseModel):
     lat: float | None = None
     lng: float | None = None
     mode: Literal["basic", "kyc"] = "basic"
+    device: str | None = None  # evidence captured for KYC mode
+    agent: str | None = None  # optional agent attestation for KYC mode
 
     @model_validator(mode="after")
     def _require_target(self):
@@ -18,8 +20,10 @@ class VerifyRequest(BaseModel):
 
 class VerifyResponse(BaseModel):
     exists: bool
-    confidence: float
+    confidence: float  # combined score: stored confidence x freshness (+ track record)
+    freshness: float  # 1.0 = freshly verified, decays toward 0
+    stale: bool  # past the re-verification threshold
     mode: str
     code: str | None = None
-    evidence_ref: str | None = None
+    evidence_ref: str | None = None  # KYC: the tamper-evident ledger hash
     verification_id: str | None = None
