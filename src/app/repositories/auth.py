@@ -1,5 +1,5 @@
 _FIND_ACTIVE_KEY = """
-SELECT k.id AS api_key_id, k.env, k.rate_limit,
+SELECT k.id AS api_key_id, k.env, k.scope, k.rate_limit,
        a.id AS account_id, a.type AS account_type
 FROM api_key k
 JOIN account a ON a.id = k.account_id

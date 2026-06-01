@@ -3,7 +3,7 @@ from app.schemas.addresses import AddressCreate
 _SELECT_BY_CODE = """
 SELECT a.id, a.code, a.olc, a.alias, a.lat, a.lng, a.geohash,
        a.state, a.lga, a.ward, a.confidence, a.status, a.created_at,
-       a.last_verified_at, a.verification_count,
+       a.last_verified_at, a.verification_count, a.owner_account_id,
        m.landmark, m.building_desc, m.access_notes, m.contact
 FROM address a
 LEFT JOIN address_metadata m ON m.address_id = a.id
@@ -17,14 +17,22 @@ async def get_by_code(conn, code: str) -> dict | None:
         return await cur.fetchone()
 
 
-async def create_address(conn, data: AddressCreate, code: str, olc: str, geohash: str) -> dict:
+async def create_address(
+    conn,
+    data: AddressCreate,
+    code: str,
+    olc: str,
+    geohash: str,
+    owner_account_id: str | None = None,
+) -> dict:
     """Insert the canonical row + metadata atomically, then return the joined view."""
     async with conn.transaction():
         async with conn.cursor() as cur:
             await cur.execute(
                 """
-                INSERT INTO address (code, olc, alias, lat, lng, geohash, state, lga, ward, status)
-                VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, 'unverified')
+                INSERT INTO address
+                    (code, olc, alias, lat, lng, geohash, state, lga, ward, status, owner_account_id)
+                VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, 'unverified', %s::uuid)
                 RETURNING id
                 """,
                 (
@@ -37,6 +45,7 @@ async def create_address(conn, data: AddressCreate, code: str, olc: str, geohash
                     data.state,
                     data.lga,
                     data.ward,
+                    owner_account_id,
                 ),
             )
             address_id = (await cur.fetchone())["id"]
@@ -58,6 +67,19 @@ async def create_address(conn, data: AddressCreate, code: str, olc: str, geohash
                 )
 
     return await get_by_code(conn, code)
+
+
+async def claim(conn, code: str, account_id: str, alias: str | None) -> dict | None:
+    """Take ownership (and optionally rename) an address that is unowned or
+    already owned by this account. Returns the row, or None if the guard failed."""
+    async with conn.cursor() as cur:
+        await cur.execute(
+            "UPDATE address SET owner_account_id = %s::uuid, alias = COALESCE(%s, alias) "
+            "WHERE code = %s AND (owner_account_id IS NULL OR owner_account_id = %s::uuid) "
+            "RETURNING id",
+            (account_id, alias, code, account_id),
+        )
+        return await cur.fetchone()
 
 
 async def touch_verification(conn, code: str, confidence: float, verified_at) -> None:

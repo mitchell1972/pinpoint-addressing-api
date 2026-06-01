@@ -32,6 +32,7 @@ FIXTURES = json.loads((HERE / "fixtures" / "lagos-known-points.json").read_text(
 TEST_KEY = "pk_test_pinpoint_demo_0001"
 LIVE_KEY = "pk_live_pinpoint_demo_0001"
 LIMIT_KEY = "pk_test_pinpoint_limit_0003"  # seeded with a tiny per-minute limit for tests
+ADMIN_KEY = "pk_test_pinpoint_admin_0001"  # seeded with scope=admin
 
 
 def _sha(s: str) -> str:
@@ -92,6 +93,11 @@ async def _seed() -> None:
                 "VALUES (%s, %s, %s, 'test', 3)",
                 (account_id, _sha(LIMIT_KEY), LIMIT_KEY[:16]),
             )
+            await cur.execute(
+                "INSERT INTO api_key (account_id, key_hash, key_prefix, env, scope, rate_limit) "
+                "VALUES (%s, %s, %s, 'test', 'admin', 1000)",
+                (account_id, _sha(ADMIN_KEY), ADMIN_KEY[:16]),
+            )
             for f in FIXTURES:
                 await cur.execute(
                     "INSERT INTO address (code, olc, alias, lat, lng, geohash, state, lga, confidence, status) "
@@ -146,6 +152,11 @@ def live_auth() -> dict:
 @pytest.fixture
 def limit_auth() -> dict:
     return {"Authorization": f"Bearer {LIMIT_KEY}"}
+
+
+@pytest.fixture
+def admin_auth() -> dict:
+    return {"Authorization": f"Bearer {ADMIN_KEY}"}
 
 
 @pytest.fixture

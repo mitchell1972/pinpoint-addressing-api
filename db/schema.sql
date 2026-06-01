@@ -47,9 +47,11 @@ CREATE TABLE IF NOT EXISTS address (
     status             text NOT NULL DEFAULT 'unverified',  -- unverified | verified
     last_verified_at   timestamptz,                         -- last KYC re-verification
     verification_count int NOT NULL DEFAULT 0,              -- feedback loop / freshness
+    owner_account_id   uuid REFERENCES account(id),         -- merchant who claimed it
     created_at         timestamptz NOT NULL DEFAULT now()
 );
 CREATE INDEX IF NOT EXISTS address_geom_gix     ON address USING gist (geom);
+CREATE INDEX IF NOT EXISTS address_owner_idx    ON address (owner_account_id);
 CREATE INDEX IF NOT EXISTS address_state_lga_idx ON address (state, lga);
 CREATE INDEX IF NOT EXISTS address_alias_trgm    ON address USING gin (alias gin_trgm_ops);
 

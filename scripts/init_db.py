@@ -26,6 +26,7 @@ FIXTURES = json.loads((ROOT / "test" / "fixtures" / "lagos-known-points.json").r
 
 TEST_KEY = "pk_test_pinpoint_demo_0001"
 LIVE_KEY = "pk_live_pinpoint_demo_0001"
+ADMIN_KEY = "pk_test_pinpoint_admin_0001"  # scope=admin: account/key management
 
 
 def seed(conn) -> None:
@@ -41,6 +42,11 @@ def seed(conn) -> None:
                 "VALUES (%s, %s, %s, %s, %s)",
                 (account_id, hash_key(raw), raw[:16], env, limit),
             )
+        cur.execute(
+            "INSERT INTO api_key (account_id, key_hash, key_prefix, env, scope, rate_limit) "
+            "VALUES (%s, %s, %s, 'test', 'admin', 1000)",
+            (account_id, hash_key(ADMIN_KEY), ADMIN_KEY[:16]),
+        )
         for f in FIXTURES:
             cur.execute(
                 "INSERT INTO address (code, olc, alias, lat, lng, geohash, state, lga, confidence, status) "
@@ -73,7 +79,7 @@ def main() -> None:
         print(f"schema applied to {settings.database_url}")
         if do_seed:
             seed(conn)
-            print(f"seeded demo account, 2 API keys, {len(FIXTURES)} Lagos addresses")
+            print(f"seeded demo account, 3 API keys (incl. admin), {len(FIXTURES)} Lagos addresses")
 
 
 if __name__ == "__main__":
