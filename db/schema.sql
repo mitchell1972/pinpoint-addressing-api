@@ -43,9 +43,11 @@ CREATE TABLE IF NOT EXISTS address (
     state       text,
     lga         text,
     ward        text,
-    confidence  real NOT NULL DEFAULT 0.5,
-    status      text NOT NULL DEFAULT 'unverified',  -- unverified | verified
-    created_at  timestamptz NOT NULL DEFAULT now()
+    confidence         real NOT NULL DEFAULT 0.5,
+    status             text NOT NULL DEFAULT 'unverified',  -- unverified | verified
+    last_verified_at   timestamptz,                         -- last KYC re-verification
+    verification_count int NOT NULL DEFAULT 0,              -- feedback loop / freshness
+    created_at         timestamptz NOT NULL DEFAULT now()
 );
 CREATE INDEX IF NOT EXISTS address_geom_gix     ON address USING gist (geom);
 CREATE INDEX IF NOT EXISTS address_state_lga_idx ON address (state, lga);
@@ -65,18 +67,26 @@ CREATE INDEX IF NOT EXISTS address_metadata_landmark_trgm
 CREATE INDEX IF NOT EXISTS address_metadata_building_trgm
     ON address_metadata USING gin (building_desc gin_trgm_ops);
 
--- KYC/AML audit trail. MVP writes a minimal record; the full immutable evidence
--- store (capture, device, agent attestation) is V1 per spec §6.3 / §12.
+-- Append-only, tamper-evident verification ledger (KYC/AML, spec §6.3 / §10).
+-- Each row hash-chains to the previous (entry_hash = sha256(prev_hash | fields)),
+-- so editing or deleting any past row breaks every hash after it. score/freshness
+-- are double precision so the chain re-verifies exactly after a DB round-trip.
+-- The address FK is intentionally NOT cascade-delete: the trail outlives the address.
 CREATE TABLE IF NOT EXISTS verification (
-    id           uuid PRIMARY KEY DEFAULT gen_random_uuid(),
-    address_id   uuid NOT NULL REFERENCES address(id) ON DELETE CASCADE,
-    method       text NOT NULL,
-    evidence_url text,
-    score        real NOT NULL,
-    verified_at  timestamptz NOT NULL DEFAULT now(),
-    verifier     text
+    id          uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+    seq         bigserial,
+    address_id  uuid NOT NULL REFERENCES address(id),
+    method      text NOT NULL,
+    score       double precision NOT NULL,
+    freshness   double precision NOT NULL DEFAULT 0,
+    evidence    jsonb NOT NULL DEFAULT '{}'::jsonb,
+    verifier    text,
+    prev_hash   text NOT NULL,
+    entry_hash  text NOT NULL,
+    verified_at timestamptz NOT NULL DEFAULT now()
 );
 CREATE INDEX IF NOT EXISTS verification_address_idx ON verification (address_id);
+CREATE INDEX IF NOT EXISTS verification_seq_idx ON verification (seq);
 
 -- Per-call metering that drives billing counters (spec §9.3 usage_event).
 CREATE TABLE IF NOT EXISTS usage_event (

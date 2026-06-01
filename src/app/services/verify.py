@@ -1,10 +1,14 @@
-"""Address verification (spec §6.3).
+"""Address verification (spec §6.3 / §10).
 
-MVP returns existence + confidence. In `kyc` mode it writes a minimal verification
-record and returns its reference. The full evidence trail (timestamped capture,
-device, agent attestation, immutable store) is V1.
+Always returns existence + a freshness-adjusted confidence + a stale flag. In
+`kyc` mode it also appends an entry to the tamper-evident audit ledger (capturing
+device/agent/IP evidence) and records the re-verification against the address
+(updating its freshness, count, and running confidence — the feedback loop).
 """
 
+from datetime import UTC, datetime
+
+from app.lib import scoring
 from app.repositories import addresses as addresses_repo
 from app.repositories import geocode as geocode_repo
 from app.repositories import verify as verify_repo
@@ -14,27 +18,38 @@ from app.schemas.verify import VerifyRequest
 _COORD_MATCH_RADIUS_M = 100
 
 
-async def verify(conn, req: VerifyRequest) -> dict:
+async def _resolve(conn, req: VerifyRequest) -> dict | None:
     if req.code:
-        addr = await addresses_repo.get_by_code(conn, req.code)
-    else:
-        rows = await geocode_repo.reverse_geocode(conn, req.lat, req.lng, 1, _COORD_MATCH_RADIUS_M)
-        addr = rows[0] if rows else None
+        return await addresses_repo.get_by_code(conn, req.code)
+    rows = await geocode_repo.reverse_geocode(conn, req.lat, req.lng, 1, _COORD_MATCH_RADIUS_M)
+    return await addresses_repo.get_by_code(conn, rows[0]["code"]) if rows else None
 
+
+async def verify(conn, req: VerifyRequest, evidence: dict | None = None) -> dict:
+    addr = await _resolve(conn, req)
     if addr is None:
         return {
             "exists": False,
             "confidence": 0.0,
+            "freshness": 0.0,
+            "stale": True,
             "mode": req.mode,
             "code": None,
             "evidence_ref": None,
             "verification_id": None,
         }
 
-    confidence = round(float(addr["confidence"]), 2)
+    now = datetime.now(UTC)
+    reference = addr["last_verified_at"] or addr["created_at"]
+    fresh = round(scoring.freshness(reference, now), 3)
+    stale = scoring.is_stale(reference, now)
+    score = scoring.combined_score(float(addr["confidence"]), fresh, addr["verification_count"])
+
     result = {
         "exists": True,
-        "confidence": confidence,
+        "confidence": score,
+        "freshness": fresh,
+        "stale": stale,
         "mode": req.mode,
         "code": addr["code"],
         "evidence_ref": None,
@@ -42,10 +57,12 @@ async def verify(conn, req: VerifyRequest) -> dict:
     }
 
     if req.mode == "kyc":
-        verification_id = await verify_repo.create_verification(
-            conn, addr["code"], "basic-mvp", confidence, "system"
+        record = {**(evidence or {}), "captured_at": now.isoformat()}
+        entry = await verify_repo.append(
+            conn, addr["id"], "kyc", score, fresh, record, "system", now
         )
-        result["verification_id"] = str(verification_id)
-        result["evidence_ref"] = f"ver_{verification_id}"
+        await addresses_repo.touch_verification(conn, addr["code"], score, now)
+        result["verification_id"] = str(entry["id"])
+        result["evidence_ref"] = entry["entry_hash"]  # tamper-evident ledger hash
 
     return result
