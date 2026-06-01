@@ -106,3 +106,29 @@ jobs:
 
       - name: Run E2E tests
         run: pytest -m e2e -q
+
+  # CD: build the image on every PR (validates the Dockerfile); on main, also
+  # publish it to GHCR using the built-in token (no extra secrets).
+  build-image:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+    steps:
+      - uses: actions/checkout@v6
+
+      - name: Build image
+        run: docker build -t pinpoint:ci .
+
+      - name: Log in to GHCR
+        if: github.ref == 'refs/heads/main'
+        run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
+
+      - name: Push image
+        if: github.ref == 'refs/heads/main'
+        run: |
+          IMAGE=ghcr.io/${{ github.repository }}
+          docker tag pinpoint:ci "$IMAGE:latest"
+          docker tag pinpoint:ci "$IMAGE:${{ github.sha }}"
+          docker push "$IMAGE:latest"
+          docker push "$IMAGE:${{ github.sha }}"

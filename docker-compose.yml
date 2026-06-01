@@ -18,5 +18,19 @@ services:
       timeout: 3s
       retries: 20
 
+  # Full app stack. Off by default (so the test loop only starts db); run with:
+  #   docker compose --profile app up --build   ->  http://localhost:8000
+  app:
+    profiles: ["app"]
+    build: .
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      PINPOINT_DATABASE_URL: postgresql://pinpoint:pinpoint@db:5432/pinpoint
+    command: sh -c "python scripts/migrate.py && uvicorn app.main:app --app-dir src --host 0.0.0.0 --port 8000"
+    ports:
+      - "8000:8000"
+
 volumes:
   pinpoint_pgdata:
