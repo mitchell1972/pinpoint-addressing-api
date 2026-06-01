@@ -26,6 +26,10 @@ class UnauthorizedError(AppError):
     status_code = 401
 
 
+class RateLimitedError(AppError):
+    status_code = 429
+
+
 def register_error_handlers(app: FastAPI) -> None:
     @app.exception_handler(AppError)
     async def _handle_app_error(request: Request, exc: AppError):

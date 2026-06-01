@@ -31,13 +31,14 @@ FIXTURES = json.loads((HERE / "fixtures" / "lagos-known-points.json").read_text(
 
 TEST_KEY = "pk_test_pinpoint_demo_0001"
 LIVE_KEY = "pk_live_pinpoint_demo_0001"
+LIMIT_KEY = "pk_test_pinpoint_limit_0003"  # seeded with a tiny per-minute limit for tests
 
 
 def _sha(s: str) -> str:
     return hashlib.sha256(s.encode()).hexdigest()
 
 
-@pytest.fixture(scope="session", autouse=True)
+@pytest.fixture(scope="session")
 def _create_test_db():
     try:
         admin = psycopg.connect(ADMIN_DSN, autocommit=True)
@@ -86,6 +87,11 @@ async def _seed() -> None:
                 "VALUES (%s, %s, %s, 'live', 120)",
                 (account_id, _sha(LIVE_KEY), LIVE_KEY[:16]),
             )
+            await cur.execute(
+                "INSERT INTO api_key (account_id, key_hash, key_prefix, env, rate_limit) "
+                "VALUES (%s, %s, %s, 'test', 3)",
+                (account_id, _sha(LIMIT_KEY), LIMIT_KEY[:16]),
+            )
             for f in FIXTURES:
                 await cur.execute(
                     "INSERT INTO address (code, olc, alias, lat, lng, geohash, state, lga, confidence, status) "
@@ -114,11 +120,13 @@ async def _seed() -> None:
 async def client(_create_test_db):
     from httpx import ASGITransport, AsyncClient
 
+    from app.core import rate_limit
     from app.core.db import close_pool, open_pool
     from app.main import app
 
     await open_pool(TEST_DSN)
     await _seed()
+    rate_limit.reset()  # start each test with a clean limiter
     transport = ASGITransport(app=app)
     async with AsyncClient(transport=transport, base_url="http://test") as c:
         yield c
@@ -133,6 +141,11 @@ def test_auth() -> dict:
 @pytest.fixture
 def live_auth() -> dict:
     return {"Authorization": f"Bearer {LIVE_KEY}"}
+
+
+@pytest.fixture
+def limit_auth() -> dict:
+    return {"Authorization": f"Bearer {LIMIT_KEY}"}
 
 
 @pytest.fixture
