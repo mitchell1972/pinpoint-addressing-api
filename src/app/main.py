@@ -8,6 +8,7 @@ from app.controllers import (
     accounts,
     addresses,
     analytics,
+    data,
     geocode,
     imports,
     sync,
@@ -16,6 +17,7 @@ from app.controllers import (
 )
 from app.core.db import close_pool, open_pool
 from app.core.errors import register_error_handlers
+from app.middleware.audit import RequestAuditMiddleware
 from app.middleware.idempotency import IdempotencyMiddleware
 from app.middleware.metering import MeteringMiddleware
 
@@ -40,6 +42,7 @@ register_error_handlers(app)
 # wraps it outermost so a replayed request short-circuits before auth/metering.
 app.add_middleware(MeteringMiddleware)
 app.add_middleware(IdempotencyMiddleware)
+app.add_middleware(RequestAuditMiddleware)  # outermost: logs every /v1 request
 
 # Controllers, all under /v1.
 app.include_router(addresses.router, prefix="/v1", tags=["addresses"])
@@ -50,6 +53,7 @@ app.include_router(accounts.router, prefix="/v1", tags=["accounts"])
 app.include_router(imports.router, prefix="/v1", tags=["imports"])
 app.include_router(analytics.router, prefix="/v1", tags=["analytics"])
 app.include_router(sync.router, prefix="/v1", tags=["sync"])
+app.include_router(data.router, prefix="/v1", tags=["data"])
 
 # Static dispatch dashboard at /dashboard/ — a thin UI over the /v1 API.
 _WEB_DIR = pathlib.Path(__file__).parent / "web"

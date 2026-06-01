@@ -71,7 +71,7 @@ async def _seed() -> None:
         async with conn.cursor() as cur:
             await cur.execute(
                 "TRUNCATE address, address_metadata, verification, account, api_key, "
-                "usage_event, idempotency_key, delivery_event, captured_address "
+                "usage_event, idempotency_key, delivery_event, captured_address, request_log "
                 "RESTART IDENTITY CASCADE"
             )
             await cur.execute(
