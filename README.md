@@ -82,7 +82,7 @@ curl -s localhost:8000/v1/geocode \
 
 | Method | Path | Status |
 |--------|------|--------|
-| POST | `/v1/geocode` | implemented (pg_trgm baseline) |
+| POST | `/v1/geocode` | implemented (pg_trgm + query cleaning) |
 | POST | `/v1/reverse` | implemented (PostGIS KNN) |
 | POST | `/v1/addresses` | implemented |
 | GET  | `/v1/addresses/{code}` | implemented |
@@ -96,15 +96,16 @@ curl -s localhost:8000/v1/geocode \
 - `test/integration/` — service+repo against real PostGIS (address round-trip, metering).
 - `test/accuracy/` — the **north-star**: forward-geocode top-candidate accuracy vs
   `test/fixtures/lagos-known-points.json`, target >90% (§11). Non-gating (`xfail`,
-  strict=False): `pytest -m accuracy -rX`. **Caveat:** the baseline scores 100% on the
-  current 8-point set only because it's too small to be adversarial — see status below.
+  strict=False). See the number + any misses with: `pytest test/accuracy -s`.
+  **Caveat:** 16 examples is still small — 100% here is encouraging, not proof.
 
 ## Honest status / TODO
 
-- **Geocoding is a naive pg_trgm baseline, and the accuracy fixture set is a toy.**
-  The harness passes 8/8 today only because 8 sparse addresses aren't adversarial.
-  Real work: expand fixtures (same-street collisions, misspellings, ambiguous pidgin),
-  then drive the engine (normalisation, libpostal, embeddings) until it clears >90%.
+- **Geocoding = pg_trgm similarity + a query-normalisation step** (`lib/normalize.py`:
+  short-forms like VI/unilag/bstop, number-words → digits, filler/pidgin removal).
+  Scores 16/16 on the hard fixture set (was 15/16 without normalisation). The real
+  next step is a **large, realistic dataset** — 16 examples can't tell you much — and
+  then heavier matching (libpostal/embeddings) if the bigger set exposes gaps.
 - **Verification is a stub.** No immutable evidence store, device/agent attestation, or
   re-verification yet (§6.3, §10) — V1.
 - **Rate limiting is not enforced.** `X-RateLimit-*` headers are surfaced; a Redis token

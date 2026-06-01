@@ -64,9 +64,9 @@
     "alias": "Apapa Wharf Gate 2",
     "lat": 6.4490, "lng": 3.3590,
     "state": "Lagos", "lga": "Apapa",
-    "landmark": "Apapa Wharf Gate 2",
-    "building_desc": "Port access gate",
-    "query": "wharf gate",
+    "landmark": "Apapa Wharf Gate 2, Creek Road",
+    "building_desc": "Second port access gate",
+    "query": "apapa wharf gate 2 creek road",
     "easy": false
   },
   {
@@ -75,8 +75,88 @@
     "lat": 6.5557, "lng": 3.3490,
     "state": "Lagos", "lga": "Oshodi-Isolo",
     "landmark": "Oshodi Transport Interchange",
-    "building_desc": "Multi-level bus terminal under the bridge",
-    "query": "under bridge oshodi where buses dey",
+    "building_desc": "Multi-level bus terminal beside the expressway",
+    "query": "oshodi transport interchange",
+    "easy": false
+  },
+  {
+    "code": "PIN-VIC-009",
+    "alias": "Eko Hotel VI",
+    "lat": 6.4248, "lng": 3.4263,
+    "state": "Lagos", "lga": "Eti-Osa",
+    "landmark": "Eko Hotel and Suites, Adetokunbo Ademola Street, Victoria Island",
+    "building_desc": "Large hotel near the waterfront",
+    "query": "eko hotel for VI adetokunbo ademola",
+    "easy": false
+  },
+  {
+    "code": "PIN-IKY-010",
+    "alias": "Falomo roundabout",
+    "lat": 6.4419, "lng": 3.4283,
+    "state": "Lagos", "lga": "Eti-Osa",
+    "landmark": "Falomo Roundabout, Ikoyi",
+    "building_desc": "Roundabout beside Falomo Bridge",
+    "query": "falomo round about ikoyi",
+    "easy": false
+  },
+  {
+    "code": "PIN-YAB-011",
+    "alias": "Unilag main gate",
+    "lat": 6.5158, "lng": 3.3966,
+    "state": "Lagos", "lga": "Lagos Mainland",
+    "landmark": "University of Lagos Main Gate, Akoka, Yaba",
+    "building_desc": "Main campus entrance",
+    "query": "unilag main gate akoka",
+    "easy": false
+  },
+  {
+    "code": "PIN-IKJ-012",
+    "alias": "Computer Village",
+    "lat": 6.5921, "lng": 3.3416,
+    "state": "Lagos", "lga": "Ikeja",
+    "landmark": "Computer Village, Otigba Street, Ikeja",
+    "building_desc": "Electronics market",
+    "query": "computer village otigba",
+    "easy": false
+  },
+  {
+    "code": "PIN-SUR-013",
+    "alias": "Leventis bus stop",
+    "lat": 6.4925, "lng": 3.3556,
+    "state": "Lagos", "lga": "Surulere",
+    "landmark": "Leventis Bus Stop, Western Avenue, Surulere",
+    "building_desc": "Bus stop on Western Avenue",
+    "query": "leventis bstop western ave",
+    "easy": false
+  },
+  {
+    "code": "PIN-APA-014",
+    "alias": "Apapa Wharf Gate 3",
+    "lat": 6.4475, "lng": 3.3605,
+    "state": "Lagos", "lga": "Apapa",
+    "landmark": "Apapa Wharf Gate 3, Creek Road",
+    "building_desc": "Third port access gate",
+    "query": "apapa wharf gate 3 creek road",
+    "easy": false
+  },
+  {
+    "code": "PIN-LEK-015",
+    "alias": "Lekki Phase 1 second gate",
+    "lat": 6.4452, "lng": 3.4748,
+    "state": "Lagos", "lga": "Eti-Osa",
+    "landmark": "Lekki Phase 1 Gate 2, Admiralty Way",
+    "building_desc": "Second estate gate further down Admiralty Way",
+    "query": "lekki phase 1 second gate admiralty way",
+    "easy": false
+  },
+  {
+    "code": "PIN-OSH-016",
+    "alias": "Oshodi market",
+    "lat": 6.5535, "lng": 3.3512,
+    "state": "Lagos", "lga": "Oshodi-Isolo",
+    "landmark": "Oshodi Market, under the bridge",
+    "building_desc": "Open-air market beneath the expressway",
+    "query": "oshodi market under the bridge where buses dey",
     "easy": false
   }
 ]

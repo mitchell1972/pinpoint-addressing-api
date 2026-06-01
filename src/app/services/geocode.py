@@ -4,6 +4,7 @@ Services return plain result dicts (the domain view); controllers wrap them with
 transport concerns (request_id, units, job_id).
 """
 
+from app.lib.normalize import normalize_text
 from app.repositories import geocode as repo
 from app.schemas.geocode import BatchGeocodeRequest, GeocodeRequest, ReverseRequest
 
@@ -36,7 +37,8 @@ def _shape_reverse(r: dict, radius_m: int) -> dict:
 async def forward(conn, req: GeocodeRequest) -> list[dict]:
     state = req.area.state if req.area else None
     lga = req.area.lga if req.area else None
-    rows = await repo.forward_geocode(conn, req.query, state, lga, req.limit)
+    query = normalize_text(req.query)
+    rows = await repo.forward_geocode(conn, query, state, lga, req.limit)
     return [_shape_forward(r) for r in rows]
 
 
