@@ -8,6 +8,7 @@ class Capture(BaseModel):
     landmark: str | None = None
     building_desc: str | None = None
     contact: str | None = None
+    consent: bool = False
     captured_at: str | None = None
 
 

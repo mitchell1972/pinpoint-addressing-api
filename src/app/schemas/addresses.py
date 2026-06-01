@@ -14,6 +14,7 @@ class AddressCreate(BaseModel):
     state: str | None = None
     lga: str | None = None
     ward: str | None = None
+    consent: bool = False  # did the person consent to storing this location? (NDPR)
 
 
 class ClaimRequest(BaseModel):
@@ -32,6 +33,7 @@ class AddressOut(BaseModel):
     ward: str | None = None
     confidence: float
     status: str
+    consent: bool = False
     landmark: str | None = None
     building_desc: str | None = None
     access_notes: str | None = None

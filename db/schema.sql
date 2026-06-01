@@ -49,6 +49,7 @@ CREATE TABLE IF NOT EXISTS address (
     verification_count int NOT NULL DEFAULT 0,              -- feedback loop / freshness
     owner_account_id   uuid REFERENCES account(id),         -- merchant who claimed it
     source             text NOT NULL DEFAULT 'manual',      -- provenance: manual|import|osm|claim
+    consent            boolean NOT NULL DEFAULT false,       -- consent to store this location (NDPR)
     created_at         timestamptz NOT NULL DEFAULT now()
 );
 CREATE INDEX IF NOT EXISTS address_geom_gix     ON address USING gist (geom);
@@ -140,3 +141,14 @@ CREATE TABLE IF NOT EXISTS captured_address (
     account_id  uuid NOT NULL REFERENCES account(id) ON DELETE CASCADE,
     created_at  timestamptz NOT NULL DEFAULT now()
 );
+
+-- Full API request audit log with a retention policy (spec §10 auditability/privacy).
+CREATE TABLE IF NOT EXISTS request_log (
+    id          bigserial PRIMARY KEY,
+    account_id  uuid,                              -- null when unauthenticated
+    method      text NOT NULL,
+    path        text NOT NULL,
+    status      int  NOT NULL,
+    ts          timestamptz NOT NULL DEFAULT now()
+);
+CREATE INDEX IF NOT EXISTS request_log_ts_idx ON request_log (ts);

@@ -27,6 +27,7 @@ async def sync(conn, captures, account_id: str) -> dict:
             landmark=cap.get("landmark"),
             building_desc=cap.get("building_desc"),
             contact=cap.get("contact"),
+            consent=cap.get("consent", False),
         )
         row = await addresses_service.create(conn, data, account_id)
         await repo.record_capture(conn, cap["capture_id"], row["id"], account_id)

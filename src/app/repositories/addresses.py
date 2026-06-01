@@ -2,7 +2,7 @@ from app.schemas.addresses import AddressCreate
 
 _SELECT_BY_CODE = """
 SELECT a.id, a.code, a.olc, a.alias, a.lat, a.lng, a.geohash,
-       a.state, a.lga, a.ward, a.confidence, a.status, a.created_at,
+       a.state, a.lga, a.ward, a.confidence, a.status, a.consent, a.created_at,
        a.last_verified_at, a.verification_count, a.owner_account_id,
        m.landmark, m.building_desc, m.access_notes, m.contact
 FROM address a
@@ -31,8 +31,8 @@ async def create_address(
             await cur.execute(
                 """
                 INSERT INTO address
-                    (code, olc, alias, lat, lng, geohash, state, lga, ward, status, owner_account_id)
-                VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, 'unverified', %s::uuid)
+                    (code, olc, alias, lat, lng, geohash, state, lga, ward, status, consent, owner_account_id)
+                VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, 'unverified', %s, %s::uuid)
                 RETURNING id
                 """,
                 (
@@ -45,6 +45,7 @@ async def create_address(
                     data.state,
                     data.lga,
                     data.ward,
+                    data.consent,
                     owner_account_id,
                 ),
             )
