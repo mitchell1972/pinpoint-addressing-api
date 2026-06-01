@@ -69,8 +69,8 @@ async def _seed() -> None:
     async with pool.connection() as conn:
         async with conn.cursor() as cur:
             await cur.execute(
-                "TRUNCATE address, address_metadata, verification, account, api_key, usage_event "
-                "RESTART IDENTITY CASCADE"
+                "TRUNCATE address, address_metadata, verification, account, api_key, "
+                "usage_event, idempotency_key RESTART IDENTITY CASCADE"
             )
             await cur.execute(
                 "INSERT INTO account (name, type, tier) VALUES (%s, %s, %s) RETURNING id",

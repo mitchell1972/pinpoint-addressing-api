@@ -88,3 +88,18 @@ CREATE TABLE IF NOT EXISTS usage_event (
     ts          timestamptz NOT NULL DEFAULT now()
 );
 CREATE INDEX IF NOT EXISTS usage_event_account_ts_idx ON usage_event (account_id, ts);
+
+-- Idempotency: first successful response for an Idempotency-Key is stored and
+-- replayed on repeat, so a double-submit can't create duplicates. Scope is the
+-- hashed API credential, keeping keys isolated per caller (spec §10).
+CREATE TABLE IF NOT EXISTS idempotency_key (
+    scope               text NOT NULL,   -- sha256 of the Authorization header
+    idem_key            text NOT NULL,
+    method              text NOT NULL,
+    path                text NOT NULL,
+    response_status     int  NOT NULL,
+    response_body       text NOT NULL,
+    response_media_type text NOT NULL DEFAULT 'application/json',
+    created_at          timestamptz NOT NULL DEFAULT now(),
+    PRIMARY KEY (scope, idem_key)
+);
