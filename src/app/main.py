@@ -5,6 +5,7 @@ from fastapi import FastAPI
 from app.controllers import addresses, geocode, usage, verify
 from app.core.db import close_pool, open_pool
 from app.core.errors import register_error_handlers
+from app.middleware.idempotency import IdempotencyMiddleware
 from app.middleware.metering import MeteringMiddleware
 
 
@@ -24,9 +25,10 @@ app = FastAPI(
 
 register_error_handlers(app)
 
-# Metering wraps every request: records a usage_event for billable calls and
-# surfaces the rate-limit header contract.
+# Middleware order: add inner-first. Metering records billable calls; idempotency
+# wraps it outermost so a replayed request short-circuits before auth/metering.
 app.add_middleware(MeteringMiddleware)
+app.add_middleware(IdempotencyMiddleware)
 
 # Controllers, all under /v1.
 app.include_router(addresses.router, prefix="/v1", tags=["addresses"])
