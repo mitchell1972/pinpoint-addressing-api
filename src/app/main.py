@@ -2,7 +2,7 @@ from contextlib import asynccontextmanager
 
 from fastapi import FastAPI
 
-from app.controllers import addresses, geocode, usage, verify
+from app.controllers import accounts, addresses, geocode, usage, verify
 from app.core.db import close_pool, open_pool
 from app.core.errors import register_error_handlers
 from app.middleware.idempotency import IdempotencyMiddleware
@@ -35,6 +35,7 @@ app.include_router(addresses.router, prefix="/v1", tags=["addresses"])
 app.include_router(geocode.router, prefix="/v1", tags=["geocode"])
 app.include_router(verify.router, prefix="/v1", tags=["verify"])
 app.include_router(usage.router, prefix="/v1", tags=["usage"])
+app.include_router(accounts.router, prefix="/v1", tags=["accounts"])
 
 
 @app.get("/health", tags=["meta"])

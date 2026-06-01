@@ -16,6 +16,10 @@ class AddressCreate(BaseModel):
     ward: str | None = None
 
 
+class ClaimRequest(BaseModel):
+    alias: str | None = None
+
+
 class AddressOut(BaseModel):
     code: str
     olc: str

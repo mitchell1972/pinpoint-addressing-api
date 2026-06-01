@@ -32,5 +32,6 @@ async def resolve_principal(conn, authorization: str) -> Principal:
         account_type=row["account_type"],
         api_key_id=str(row["api_key_id"]),
         env=row["env"],
+        scope=row["scope"],
         rate_limit=row["rate_limit"],
     )

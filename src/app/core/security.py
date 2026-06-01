@@ -10,6 +10,7 @@ class Principal:
     account_type: str
     api_key_id: str
     env: str  # 'test' | 'live'
+    scope: str  # 'read' | 'admin'
     rate_limit: int
 
 
