@@ -4,11 +4,10 @@ Runs free-text queries (no admin-area hint, the hard real-world case) against th
 Lagos ground truth and asserts >=90% of top candidates are correct.
 
 NON-GATING (xfail, strict=False) on purpose: a north-star you track, not a gate
-that blocks merges. Note the pg_trgm baseline currently scores 100% here — that is
-NOT a validated engine, it is an inadequate fixture set: 8 sparse addresses where
-every query has exactly one trigram match. Before this number means anything, grow
-test/fixtures with same-street collisions, misspellings, and genuinely ambiguous
-pidgin where the correct answer is not the only candidate. Run: pytest -m accuracy -rX
+that blocks merges. The fixture set now includes genuinely hard cases — same-area
+collisions (two wharf gates, two Lekki gates), abbreviations (VI, unilag, bstop),
+pidgin/filler words and a misspelling — so the score reflects real difficulty, not
+a trivially-separable toy set. Run with the number visible: pytest test/accuracy -s
 """
 
 import pytest
@@ -16,13 +15,14 @@ import pytest
 
 @pytest.mark.accuracy
 @pytest.mark.xfail(
-    reason="Non-gating north-star (spec §11, >90%). Current 8-point fixture set is too "
-    "small/sparse to be adversarial; the pg_trgm baseline clears it trivially and "
-    "that does not validate the engine. Expand fixtures before trusting this.",
+    reason="Non-gating north-star (spec §11, target >90%). The matcher is a pg_trgm + "
+    "query-normalisation baseline and does not yet clear 90% on the hard fixture set; "
+    "the engine work to close the gap is ongoing.",
     strict=False,
 )
 async def test_forward_geocode_top_candidate_accuracy(client, test_auth, fixtures):
     correct = 0
+    misses = []
     for f in fixtures:
         r = await client.post(
             "/v1/geocode",
@@ -33,8 +33,16 @@ async def test_forward_geocode_top_candidate_accuracy(client, test_auth, fixture
         results = r.json()["results"]
         if results and results[0]["code"] == f["code"]:
             correct += 1
+        else:
+            got = results[0]["code"] if results else None
+            misses.append(f"{f['query']!r} -> got {got}, expected {f['code']}")
 
     rate = correct / len(fixtures)
+    print(
+        f"\n[accuracy] forward-geocode top candidate correct: {correct}/{len(fixtures)} = {rate:.0%}"
+    )
+    for m in misses:
+        print(f"   miss: {m}")
     assert rate >= 0.90, (
         f"top-candidate accuracy {rate:.0%} < 90% target ({correct}/{len(fixtures)})"
     )
