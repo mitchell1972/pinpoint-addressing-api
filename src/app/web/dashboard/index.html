@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Pinpoint — Dispatch Dashboard</title>
+    <style>
+      body { font-family: system-ui, sans-serif; max-width: 860px; margin: 2rem auto; padding: 0 1rem; color: #1a1a1a; }
+      h1 { font-size: 1.4rem; }
+      h2 { font-size: 1.05rem; margin-top: 2rem; }
+      section { border: 1px solid #e3e3e3; border-radius: 8px; padding: 1rem; margin: 1rem 0; }
+      input, select, button { font-size: 1rem; padding: 0.4rem 0.6rem; }
+      button { cursor: pointer; background: #1a73e8; color: #fff; border: 0; border-radius: 6px; }
+      table { width: 100%; border-collapse: collapse; margin-top: 0.75rem; }
+      th, td { text-align: left; padding: 0.4rem 0.5rem; border-bottom: 1px solid #eee; font-size: 0.9rem; }
+      .status { margin-left: 0.5rem; color: #137333; font-size: 0.9rem; }
+    </style>
+  </head>
+  <body>
+    <h1>Pinpoint — Dispatch Dashboard</h1>
+
+    <section>
+      <label>API key
+        <input id="apiKey" data-testid="api-key" placeholder="pk_test_..." size="40" />
+      </label>
+      <button id="saveKey" data-testid="save-key">Save key</button>
+      <span id="keyStatus" class="status" data-testid="key-status"></span>
+    </section>
+
+    <section>
+      <h2>Find an address</h2>
+      <input id="q" data-testid="search-input" placeholder="e.g. silverbird galleria" size="40" />
+      <button id="searchBtn" data-testid="search-btn">Search</button>
+      <table>
+        <thead><tr><th>Code</th><th>Landmark</th><th>Confidence</th></tr></thead>
+        <tbody id="results" data-testid="results"></tbody>
+      </table>
+    </section>
+
+    <section>
+      <h2>Delivery analytics</h2>
+      <button id="loadAnalytics" data-testid="load-analytics">Load analytics</button>
+      <div id="summary" class="status" data-testid="summary"></div>
+      <table>
+        <thead><tr><th>Area (LGA)</th><th>Total</th><th>Failed</th><th>Fail rate</th></tr></thead>
+        <tbody id="hotspots" data-testid="hotspots"></tbody>
+      </table>
+    </section>
+
+    <section>
+      <h2>Record a delivery</h2>
+      <input id="delCode" data-testid="del-code" placeholder="PIN-..." />
+      <select id="delStatus" data-testid="del-status">
+        <option value="delivered">delivered</option>
+        <option value="failed">failed</option>
+      </select>
+      <button id="recordBtn" data-testid="record-btn">Record</button>
+      <span id="recordStatus" class="status" data-testid="record-status"></span>
+    </section>
+
+    <script src="app.js"></script>
+  </body>
+</html>
