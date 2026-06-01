@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="manifest" href="manifest.json" />
+    <title>Pinpoint — Field Capture</title>
+    <style>
+      body { font-family: system-ui, sans-serif; max-width: 520px; margin: 1.5rem auto; padding: 0 1rem; }
+      section { border: 1px solid #e3e3e3; border-radius: 8px; padding: 1rem; margin: 1rem 0; }
+      input, button { font-size: 1rem; padding: 0.4rem 0.6rem; margin: 0.2rem 0; }
+      button { background: #1a73e8; color: #fff; border: 0; border-radius: 6px; cursor: pointer; }
+    </style>
+  </head>
+  <body>
+    <h1>Pinpoint — Field Capture</h1>
+
+    <section>
+      <input data-testid="api-key" id="apiKey" placeholder="pk_test_..." size="34" />
+      <button data-testid="save-key" id="saveKey">Save key</button>
+    </section>
+
+    <section>
+      <h2>Capture a location</h2>
+      <input data-testid="cap-lat" id="lat" placeholder="lat" />
+      <input data-testid="cap-lng" id="lng" placeholder="lng" />
+      <button data-testid="gps" id="gps">Use my GPS</button><br />
+      <input data-testid="cap-landmark" id="landmark" placeholder="landmark / description" size="34" />
+      <button data-testid="queue-btn" id="queueBtn">Save (queue offline)</button>
+      <p>Queued: <span data-testid="queue-count" id="queueCount">0</span></p>
+    </section>
+
+    <section>
+      <h2>Sync</h2>
+      <button data-testid="sync-btn" id="syncBtn">Sync now</button>
+      <div data-testid="sync-status" id="syncStatus"></div>
+      <ul data-testid="sync-results" id="syncResults"></ul>
+    </section>
+
+    <script src="app.js"></script>
+  </body>
+</html>
