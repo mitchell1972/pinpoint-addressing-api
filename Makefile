@@ -1,5 +1,5 @@
 # Convenience targets. Assumes a local virtualenv at .venv (see README).
-.PHONY: venv up down init-db seed dev test lint format
+.PHONY: venv up down init-db seed dev test lint format import
 
 venv:
 	python3.11 -m venv .venv && .venv/bin/pip install -e ".[dev]"
@@ -15,6 +15,9 @@ init-db:        ## apply db/schema.sql to PINPOINT_DATABASE_URL
 
 seed:           ## apply schema + insert a demo account, API keys, and Lagos fixtures
 	.venv/bin/python scripts/init_db.py --seed
+
+import:         ## bulk-load the bundled Lagos sample into the dev DB
+	.venv/bin/python scripts/import_addresses.py data/lagos_sample.csv
 
 dev:            ## run the API with autoreload
 	.venv/bin/uvicorn app.main:app --reload --app-dir src

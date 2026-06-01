@@ -1,0 +1,31 @@
+lat,lng,alias,landmark,building_desc,state,lga,confidence
+6.4281,3.4219,Silverbird VI,Silverbird Galleria Ahmadu Bello Way,Glass-fronted shopping galleria,Lagos,Eti-Osa,0.7
+6.4248,3.4263,Eko Hotel,Eko Hotel and Suites Adetokunbo Ademola Street,Large hotel near the waterfront,Lagos,Eti-Osa,0.7
+6.4419,3.4283,Falomo Roundabout,Falomo Roundabout Ikoyi,Roundabout beside Falomo Bridge,Lagos,Eti-Osa,0.65
+6.4316,3.4220,Civic Centre,Civic Centre Ozumba Mbadiwe,Tower by the lagoon,Lagos,Eti-Osa,0.65
+6.4407,3.4647,Lekki Conservation Centre,Lekki Conservation Centre Lekki-Epe Expressway,Nature reserve with canopy walkway,Lagos,Eti-Osa,0.65
+6.4319,3.4516,The Palms Lekki,The Palms Shopping Mall Bisway Street,Shopping mall with cinema,Lagos,Eti-Osa,0.7
+6.5095,3.3711,Tejuosho,Tejuosho Market Yaba,Main market entrance off Ojuelegba Road,Lagos,Lagos Mainland,0.65
+6.5158,3.3966,Unilag,University of Lagos Main Gate Akoka,Main campus entrance,Lagos,Lagos Mainland,0.7
+6.5009,3.3700,Yaba Tech,Yaba College of Technology Herbert Macaulay Way,Polytechnic main gate,Lagos,Lagos Mainland,0.65
+6.4980,3.3601,Adekunle,Adekunle Bus Stop Third Mainland Bridge,Mainland bridge access ramp,Lagos,Lagos Mainland,0.6
+6.5772,3.3509,Ikeja City Mall,Ikeja City Mall Obafemi Awolowo Way,Large shopping mall with car park,Lagos,Ikeja,0.7
+6.5921,3.3416,Computer Village,Computer Village Otigba Street,Electronics market,Lagos,Ikeja,0.7
+6.6018,3.3515,Allen Roundabout,Allen Avenue Roundabout Ikeja,Busy commercial roundabout,Lagos,Ikeja,0.65
+6.5796,3.3216,Murtala Airport,Murtala Muhammed Airport Local Terminal,Domestic terminal frontage,Lagos,Ikeja,0.7
+6.5833,3.3380,Ikeja GRA,Ikeja GRA Joel Ogunnaike Street,Residential government area,Lagos,Ikeja,0.6
+6.4969,3.3481,National Stadium,National Stadium Surulere,Adjacent to Teslim Balogun Stadium,Lagos,Surulere,0.65
+6.4925,3.3556,Leventis,Leventis Bus Stop Western Avenue,Bus stop on Western Avenue,Lagos,Surulere,0.6
+6.5005,3.3578,Barracks,Ojuelegba Bus Stop Surulere,Major junction under the bridge,Lagos,Surulere,0.6
+6.4490,3.3590,Apapa Wharf,Apapa Wharf Gate 2 Creek Road,Second port access gate,Lagos,Apapa,0.6
+6.4475,3.3605,Apapa Wharf 3,Apapa Wharf Gate 3 Creek Road,Third port access gate,Lagos,Apapa,0.6
+6.4520,3.3640,Apapa GRA,Apapa GRA Marine Road,Residential area near the port,Lagos,Apapa,0.6
+6.5557,3.3490,Oshodi Interchange,Oshodi Transport Interchange,Multi-level bus terminal beside the expressway,Lagos,Oshodi-Isolo,0.65
+6.5535,3.3512,Oshodi Market,Oshodi Market under the bridge,Open-air market beneath the expressway,Lagos,Oshodi-Isolo,0.6
+6.5379,3.3216,Isolo,Isolo Bus Stop Okota Road,Busy commercial bus stop,Lagos,Oshodi-Isolo,0.6
+6.4541,3.3947,Obalende,Obalende Bus Stop Lagos Island,Under-bridge motor park,Lagos,Lagos Island,0.6
+6.4550,3.3841,CMS,CMS Bus Stop Marina,Central business district terminus,Lagos,Lagos Island,0.65
+6.4531,3.3958,Tafawa Balewa Square,Tafawa Balewa Square Onikan,Historic public square,Lagos,Lagos Island,0.65
+6.6194,3.5105,Ikorodu Roundabout,Ikorodu Garage Roundabout,Central town roundabout,Lagos,Ikorodu,0.6
+6.6135,3.3088,Egbeda,Egbeda Bus Stop Idimu Road,Busy market junction,Lagos,Alimosho,0.6
+6.6471,3.3260,Iyana Ipaja,Iyana Ipaja Bus Stop Lagos-Abeokuta Expressway,Major transport hub,Lagos,Alimosho,0.6
